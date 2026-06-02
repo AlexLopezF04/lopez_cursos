@@ -14,6 +14,8 @@ from store.views import RegistroView
 urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
+    path('api/health/', health, name='health'),
+
 
     # Auth JWT
     path('api/auth/registro/', RegistroView.as_view(),          name='auth-registro'),
