@@ -25,7 +25,6 @@ class EsPropietarioOAdmin(BasePermission):
             return True
         if request.user.rol == 'admin':
             return True
-        # Compatible con Curso (instructor) y Resena/Matricula (usuario)
         propietario = getattr(obj, 'instructor', None) or getattr(obj, 'usuario', None)
         return propietario == request.user
 
