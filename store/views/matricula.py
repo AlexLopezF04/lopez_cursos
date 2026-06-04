@@ -5,11 +5,12 @@ from store.models import Matricula
 from store.serializers import MatriculaSerializer
 from store.pagination import StandardPagination
 from store.permissions import EsAdminDjango, EsPropietarioOAdmin
-
+from store.filters import MatriculaFilter
 
 class MatriculaViewSet(viewsets.ModelViewSet):
     serializer_class   = MatriculaSerializer
     pagination_class   = StandardPagination
+    filterset_class = MatriculaFilter
     permission_classes = [permissions.IsAuthenticated]
     http_method_names  = ['get', 'post', 'patch', 'delete', 'head', 'options']
 

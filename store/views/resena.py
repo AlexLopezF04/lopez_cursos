@@ -5,11 +5,12 @@ from store.models import Resena
 from store.serializers import ResenaSerializer
 from store.pagination import StandardPagination
 from store.permissions import EsPropietarioOAdmin
-
+from store.filters import ResenaFilter
 
 class ResenaViewSet(viewsets.ModelViewSet):
     serializer_class   = ResenaSerializer
     pagination_class   = StandardPagination
+    filterset_class = ResenaFilter
     permission_classes = [permissions.IsAuthenticated]
     http_method_names  = ['get', 'post', 'patch', 'delete', 'head', 'options']
 

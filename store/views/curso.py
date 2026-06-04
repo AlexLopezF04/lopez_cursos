@@ -8,16 +8,16 @@ from store.models import Curso
 from store.serializers import CursoSerializer, CursoListSerializer
 from store.pagination import StandardPagination
 from store.permissions import EsInstructor, EsPropietarioOAdmin, EsSoloLectura
-
+from store.filters import CursoFilter
 
 class CursoViewSet(viewsets.ModelViewSet):
     queryset         = Curso.objects.select_related('instructor', 'categoria').order_by('-created_at')
     pagination_class = StandardPagination
+    filterset_class  = CursoFilter
     filter_backends  = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['nivel', 'publicado', 'categoria']
     search_fields    = ['titulo', 'descripcion']
     ordering_fields  = ['precio', 'created_at']
-
+    
     def get_serializer_class(self):
         if self.action == 'list':
             return CursoListSerializer
