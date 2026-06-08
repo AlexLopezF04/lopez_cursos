@@ -6,7 +6,7 @@ from store.models import Usuario
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Usuario
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'rol', 'bio', 'foto', 'created_at']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'rol', 'is_staff', 'bio', 'foto', 'created_at']
         read_only_fields = ['created_at']
 
 

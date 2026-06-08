@@ -30,6 +30,10 @@ class EsPropietarioOAdmin(BasePermission):
 
 
 class EsAdminDjango(BasePermission):
-    """Solo staff de Django."""
+    """Solo staff de Django o rol admin."""
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_staff)
+        return bool(
+            request.user and
+            request.user.is_authenticated and
+            (request.user.is_staff or request.user.rol == 'admin')
+        )

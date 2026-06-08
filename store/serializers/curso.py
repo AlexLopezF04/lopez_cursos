@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from store.models import Curso
-from .usuario   import UsuarioSerializer
+from .usuario import UsuarioSerializer
 from .categoria import CategoriaSerializer
 
 class CursoListSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class CursoSerializer(serializers.ModelSerializer):
 
     categoria_id  = serializers.PrimaryKeyRelatedField(
         source='categoria', queryset=__import__('store.models', fromlist=['Categoria']).Categoria.objects.all(),
-        write_only=True
+        write_only=True, allow_null=True, required=False,
     )
 
     class Meta:
