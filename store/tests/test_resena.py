@@ -1,7 +1,7 @@
 # store/tests/test_resena.py
 from rest_framework import status
 from rest_framework.test import APITestCase
-from store.models import Usuario, Categoria, Curso, Resena
+from store.models import Usuario, Categoria, Curso, Matricula, Resena
 
 
 class ResenaTestCase(APITestCase):
@@ -12,6 +12,9 @@ class ResenaTestCase(APITestCase):
         )
         self.estudiante = Usuario.objects.create_user(
             username='estudiante1', password='clave1234', rol='estudiante'
+        )
+        self.estudiante2 = Usuario.objects.create_user(
+            username='estudiante2', password='clave1234', rol='estudiante'
         )
         self.categoria = Categoria.objects.create(nombre='Python', slug='python')
         self.curso = Curso.objects.create(
@@ -24,7 +27,16 @@ class ResenaTestCase(APITestCase):
             categoria=self.categoria,
         )
 
+    def _matricular(self, usuario):
+        return Matricula.objects.create(
+            usuario=usuario,
+            curso=self.curso,
+            estado='activa',
+            monto_pagado=self.curso.precio,
+        )
+
     def test_crear_resena(self):
+        self._matricular(self.estudiante)
         self.client.force_authenticate(user=self.estudiante)
         data = {
             'curso':        self.curso.id,
@@ -35,14 +47,22 @@ class ResenaTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Resena.objects.count(), 1)
 
-    def test_resena_duplicada_falla(self):
+    def test_crear_resena_sin_matricula_falla(self):
         self.client.force_authenticate(user=self.estudiante)
+        data = {'curso': self.curso.id, 'calificacion': 5, 'comentario': 'Test'}
+        response = self.client.post(f'/api/cursos/{self.curso.id}/resenas/', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_resena_duplicada_falla(self):
+        self._matricular(self.estudiante2)
+        self.client.force_authenticate(user=self.estudiante2)
         data = {'curso': self.curso.id, 'calificacion': 4, 'comentario': 'Bueno'}
         self.client.post(f'/api/cursos/{self.curso.id}/resenas/', data)
         response = self.client.post(f'/api/cursos/{self.curso.id}/resenas/', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_calificacion_fuera_de_rango_falla(self):
+        self._matricular(self.estudiante)
         self.client.force_authenticate(user=self.estudiante)
         data = {'curso': self.curso.id, 'calificacion': 6, 'comentario': 'Test'}
         response = self.client.post(f'/api/cursos/{self.curso.id}/resenas/', data)
