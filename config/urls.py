@@ -6,11 +6,10 @@ from django.conf.urls.static import static
 from django.http import JsonResponse
 
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
     TokenBlacklistView,
 )
-from store.views import RegistroView
+from store.views import RegistroView, CustomTokenObtainPairView
 
 
 def health(request):
@@ -21,7 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health/', health, name='health'),
     path('api/auth/registro/', RegistroView.as_view(),        name='auth-registro'),
-    path('api/auth/login/',    TokenObtainPairView.as_view(), name='auth-login'),
+    path('api/auth/login/',    CustomTokenObtainPairView.as_view(), name='auth-login'),
     path('api/auth/refresh/',  TokenRefreshView.as_view(),    name='auth-refresh'),
     path('api/auth/logout/',   TokenBlacklistView.as_view(),  name='auth-logout'),
     path('api/', include('store.urls')),
